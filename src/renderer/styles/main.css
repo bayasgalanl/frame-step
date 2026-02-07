@@ -517,6 +517,18 @@ kbd {
 }
 
 /* Fullscreen adjustments */
+#fullscreenBtn .fullscreen-exit-icon {
+  display: none;
+}
+
+body.fullscreen-active #fullscreenBtn .fullscreen-enter-icon {
+  display: none;
+}
+
+body.fullscreen-active #fullscreenBtn .fullscreen-exit-icon {
+  display: block;
+}
+
 :fullscreen .titlebar {
   display: none;
 }

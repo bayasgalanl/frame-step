@@ -136,6 +136,16 @@ class Controls {
     document.getElementById('nextFrameBtn').addEventListener('click', () => {
       this.vc.stepFrame(1);
     });
+
+    // Fullscreen button
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      this.toggleFullscreen();
+    });
+
+    // Listen for fullscreen changes to update UI
+    document.addEventListener('fullscreenchange', () => {
+      this.updateFullscreenUI();
+    });
   }
 
   /**
@@ -253,6 +263,22 @@ class Controls {
       document.exitFullscreen();
     } else {
       document.documentElement.requestFullscreen();
+    }
+  }
+
+  /**
+   * Update fullscreen UI state
+   */
+  updateFullscreenUI() {
+    const isFullscreen = !!document.fullscreenElement;
+    const btn = document.getElementById('fullscreenBtn');
+
+    if (isFullscreen) {
+      document.body.classList.add('fullscreen-active');
+      btn.title = 'Exit fullscreen (F)';
+    } else {
+      document.body.classList.remove('fullscreen-active');
+      btn.title = 'Enter fullscreen (F)';
     }
   }
 
