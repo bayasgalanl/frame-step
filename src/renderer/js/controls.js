@@ -6,7 +6,7 @@ class Controls {
   constructor(videoController) {
     this.vc = videoController;
     this.shortcutsVisible = false;
-    
+
     this.setupKeyboardControls();
     this.setupMouseControls();
     this.setupButtonControls();
@@ -29,17 +29,17 @@ class Controls {
           e.preventDefault();
           await this.vc.stepFrame(e.shiftKey ? -10 : -1);
           break;
-          
+
         case 'ArrowRight':
           e.preventDefault();
           await this.vc.stepFrame(e.shiftKey ? 10 : 1);
           break;
-          
+
         case ' ':
           e.preventDefault();
           this.vc.togglePlayPause();
           break;
-          
+
         case 'o':
         case 'O':
           if (!e.ctrlKey && !e.metaKey) {
@@ -47,7 +47,7 @@ class Controls {
             this.openFile();
           }
           break;
-          
+
         case 'f':
         case 'F':
           if (!e.ctrlKey && !e.metaKey) {
@@ -55,12 +55,12 @@ class Controls {
             this.toggleFullscreen();
           }
           break;
-          
+
         case '?':
           e.preventDefault();
           this.toggleShortcutsHelp();
           break;
-          
+
         case 'Escape':
           if (this.shortcutsVisible) {
             this.toggleShortcutsHelp();
@@ -75,16 +75,16 @@ class Controls {
    */
   setupMouseControls() {
     const videoContainer = document.getElementById('videoContainer');
-    
+
     // Wheel scrubbing (only when paused)
     videoContainer.addEventListener('wheel', async (e) => {
       const state = this.vc.getState();
       if (!state.isPaused && !state.isFrameMode) {
         return; // Only scrub when paused or in frame mode
       }
-      
+
       e.preventDefault();
-      
+
       // Determine direction
       const delta = e.deltaY > 0 ? 1 : -1;
       await this.vc.stepFrame(delta);
@@ -102,19 +102,16 @@ class Controls {
     videoContainer.addEventListener('click', (e) => {
       // Ignore clicks on controls or drop zone
       if (e.target.closest('.controls-bar') || e.target.closest('.drop-zone')) return;
-      
+
       // Use timeout to distinguish from double-click
       if (clickTimeout) {
         clearTimeout(clickTimeout);
         clickTimeout = null;
         return;
       }
-      
+
       clickTimeout = setTimeout(() => {
-        const state = this.vc.getState();
-        if (state.isPlaying) {
-          this.vc.pause();
-        }
+        this.vc.togglePlayPause();
         clickTimeout = null;
       }, 200);
     });
@@ -269,7 +266,7 @@ class Controls {
   toggleShortcutsHelp() {
     const help = document.getElementById('shortcutsHelp');
     this.shortcutsVisible = !this.shortcutsVisible;
-    
+
     if (this.shortcutsVisible) {
       help.classList.add('visible');
     } else {
