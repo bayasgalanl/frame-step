@@ -92,6 +92,13 @@
       window.electronAPI.windowClose();
     });
 
+    // Hamburger menu toggle
+    const menuContainer = document.querySelector('.menu-container');
+    document.getElementById('menuToggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuContainer.classList.toggle('active');
+    });
+
     // Menu: File > Open
     document.getElementById('menuOpen').addEventListener('click', async () => {
       closeAllMenus();
@@ -99,11 +106,6 @@
       if (filePath) {
         await videoController.loadVideo(filePath);
       }
-    });
-
-    // Menu: File > Exit
-    document.getElementById('menuExit').addEventListener('click', () => {
-      window.electronAPI.windowClose();
     });
 
     // Menu: View > Fullscreen
@@ -116,13 +118,6 @@
       }
     });
 
-    // Menu: View > Developer Tools
-    document.getElementById('menuDevTools').addEventListener('click', () => {
-      closeAllMenus();
-      // DevTools needs to be triggered from main process
-      // For now, users can use Ctrl+Shift+I
-    });
-
     // Menu: Help > Shortcuts
     document.getElementById('menuShortcuts').addEventListener('click', () => {
       closeAllMenus();
@@ -131,7 +126,7 @@
 
     // Close menus when clicking outside
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.menu-item')) {
+      if (!e.target.closest('.menu-item') && !e.target.closest('#menuToggle')) {
         closeAllMenus();
       }
     });
@@ -145,6 +140,7 @@
   }
 
   function closeAllMenus() {
+    document.querySelector('.menu-container').classList.remove('active');
     document.querySelectorAll('.menu-item').forEach(item => {
       item.classList.remove('active');
     });
