@@ -16,7 +16,7 @@
     "ffmpeg",
     "frame-stepping"
   ],
-  "author": "",
+  "author": "FrameStep Maintainer <maintainer@framestep.app>",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
@@ -40,11 +40,11 @@
     "extraResources": [
       {
         "from": "node_modules/ffmpeg-static/ffmpeg",
-        "to": "ffmpeg"
+        "to": "bin/ffmpeg"
       },
       {
-        "from": "node_modules/ffprobe-static/bin",
-        "to": "ffprobe"
+        "from": "node_modules/ffprobe-static/bin/linux/x64/ffprobe",
+        "to": "bin/ffprobe"
       }
     ],
     "mac": {
@@ -54,7 +54,9 @@
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage",
+      "target": [
+        "deb"
+      ],
       "category": "Video"
     }
   }

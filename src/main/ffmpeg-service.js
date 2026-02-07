@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const { app } = require('electron');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegStatic = require('ffmpeg-static');
 const ffprobeStatic = require('ffprobe-static');
@@ -6,14 +7,26 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-// Set ffmpeg and ffprobe paths
-ffmpeg.setFfmpegPath(ffmpegStatic);
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+// Note: Paths are set dynamically in the constructor to handle packaged app correctly
+
 
 class FFmpegService {
   constructor() {
     this.tempDir = path.join(os.tmpdir(), 'frame-player');
-    this.ffmpegPath = ffmpegStatic;
+
+    // Resolve paths for ffmpeg and ffprobe
+    if (app.isPackaged) {
+      this.ffmpegPath = path.join(process.resourcesPath, 'bin/ffmpeg');
+      this.ffprobePath = path.join(process.resourcesPath, 'bin/ffprobe');
+    } else {
+      this.ffmpegPath = ffmpegStatic;
+      this.ffprobePath = ffprobeStatic.path;
+    }
+
+    // Set fluent-ffmpeg paths
+    ffmpeg.setFfmpegPath(this.ffmpegPath);
+    ffmpeg.setFfprobePath(this.ffprobePath);
+
     this.ensureTempDir();
   }
 
@@ -51,8 +64,8 @@ class FFmpegService {
         }
 
         // Get duration from video stream or format
-        const duration = parseFloat(videoStream.duration) || 
-                        parseFloat(metadata.format.duration) || 0;
+        const duration = parseFloat(videoStream.duration) ||
+          parseFloat(metadata.format.duration) || 0;
 
         // Calculate total frames
         const totalFrames = Math.floor(frameRate * duration);
@@ -85,21 +98,21 @@ class FFmpegService {
    */
   async extractFrame(filePath, frameNumber, frameRate) {
     const timestamp = frameNumber / frameRate;
-    
+
     return new Promise((resolve, reject) => {
       const chunks = [];
       let settled = false;
-      
+
       // For TRUE frame-accurate extraction, we use the select filter
       // This decodes frames sequentially and picks the exact frame number
       // Trade-off: More accurate but slower for frames far into the video
-      
+
       // Optimization: Fast seek to ~2 seconds before target, then decode from there
       // This limits the decode window while maintaining accuracy
       const seekTime = Math.max(0, timestamp - 2);
       const framesToSkip = Math.round(seekTime * frameRate);
       const relativeFrame = frameNumber - framesToSkip;
-      
+
       const args = [
         '-ss', seekTime.toFixed(3),           // Fast seek to near target
         '-i', filePath,
@@ -111,20 +124,20 @@ class FFmpegService {
         '-q:v', '2',                          // High quality
         '-'                                   // Output to stdout
       ];
-      
+
       const proc = spawn(this.ffmpegPath, args, {
         stdio: ['ignore', 'pipe', 'ignore']
       });
-      
+
       proc.stdout.on('data', (chunk) => {
         chunks.push(chunk);
       });
-      
+
       proc.on('close', (code) => {
         if (settled) return;
         settled = true;
         clearTimeout(timeout);
-        
+
         if (code === 0 && chunks.length > 0) {
           const buffer = Buffer.concat(chunks);
           resolve({
@@ -137,14 +150,14 @@ class FFmpegService {
           reject(new Error(`FFmpeg exited with code ${code}`));
         }
       });
-      
+
       proc.on('error', (err) => {
         if (settled) return;
         settled = true;
         clearTimeout(timeout);
         reject(new Error(`Failed to spawn ffmpeg: ${err.message}`));
       });
-      
+
       // Longer timeout for frame-accurate extraction
       const timeout = setTimeout(() => {
         if (settled) return;
@@ -164,7 +177,7 @@ class FFmpegService {
    */
   async extractFramesBatch(filePath, frameNumbers, frameRate) {
     const results = await Promise.all(
-      frameNumbers.map(frameNum => 
+      frameNumbers.map(frameNum =>
         this.extractFrame(filePath, frameNum, frameRate).catch(err => ({
           frameNumber: frameNum,
           error: err.message
