@@ -11,8 +11,8 @@ function createWindow() {
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    backgroundColor: '#1e1e1e',
     frame: false,
+    transparent: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -56,7 +56,7 @@ function setupWindowEvents() {
   mainWindow.on('maximize', () => {
     mainWindow.webContents.send('window-maximized', true);
   });
-  
+
   mainWindow.on('unmaximize', () => {
     mainWindow.webContents.send('window-maximized', false);
   });
@@ -86,11 +86,11 @@ ipcMain.handle('open-file-dialog', async () => {
       { name: 'Videos', extensions: ['mp4', 'mkv', 'avi', 'mov', 'webm', 'wmv', 'flv', 'm4v'] }
     ]
   });
-  
+
   if (result.canceled || result.filePaths.length === 0) {
     return null;
   }
-  
+
   return result.filePaths[0];
 });
 
