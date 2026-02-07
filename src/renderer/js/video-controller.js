@@ -318,6 +318,14 @@ class VideoController {
   }
 
   /**
+   * Seek to the beginning of the video
+   */
+  async goToBeginning() {
+    if (!this.metadata) return;
+    await this.seekToProgress(0);
+  }
+
+  /**
    * Seek to a specific progress position (0-1)
    * @param {number} progress - Position as fraction of duration
    */
@@ -422,6 +430,7 @@ class VideoController {
     document.getElementById('playPauseBtn').disabled = !enabled;
     document.getElementById('prevFrameBtn').disabled = !enabled;
     document.getElementById('nextFrameBtn').disabled = !enabled;
+    document.getElementById('restartBtn').disabled = !enabled;
   }
 
   /**

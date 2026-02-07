@@ -72,6 +72,12 @@ class Controls {
           this.vc.toggleMute();
           break;
 
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          this.vc.goToBeginning();
+          break;
+
         case 'Escape':
           if (this.shortcutsVisible) {
             this.toggleShortcutsHelp();
@@ -136,6 +142,11 @@ class Controls {
 
     document.getElementById('playPauseBtn').addEventListener('click', () => {
       this.vc.togglePlayPause();
+    });
+
+    // Restart button
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      this.vc.goToBeginning();
     });
 
     // Previous frame button
