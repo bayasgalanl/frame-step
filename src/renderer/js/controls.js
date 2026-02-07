@@ -202,9 +202,10 @@ class Controls {
       this.autoHideTimer = setTimeout(hideControls, hideTimeout);
     };
 
-    // Show on mouse move/down
+    // Show on mouse move/down or key press
     document.addEventListener('mousemove', showControls);
     document.addEventListener('mousedown', showControls);
+    document.addEventListener('keydown', showControls);
 
     // Prevent hiding when mouse is over controls
     controlsBar.addEventListener('mouseenter', () => {
