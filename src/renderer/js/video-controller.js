@@ -20,6 +20,8 @@ class VideoController {
     this.isPlaying = false;
     this.isFrameMode = false; // True when showing extracted frame on canvas
     this.isStepping = false;
+    this.volume = 1.0;
+    this.previousVolume = 1.0;
 
     // Bind methods
     this.onVideoFrame = this.onVideoFrame.bind(this);
@@ -55,6 +57,9 @@ class VideoController {
     });
 
     this.videoElement.addEventListener('timeupdate', this.onTimeUpdate);
+    this.videoElement.addEventListener('volumechange', () => {
+      this.updateVolumeUI();
+    });
 
     // Use requestVideoFrameCallback for frame-accurate tracking during playback
     if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
@@ -355,6 +360,52 @@ class VideoController {
     // Show center feedback animation
     if (this.metadata) {
       this.ui.showPlaybackFeedback(this.isPlaying);
+    }
+  }
+
+  /**
+   * Set video volume (0-1)
+   * @param {number} value 
+   */
+  setVolume(value) {
+    this.volume = Math.max(0, Math.min(1, value));
+    this.videoElement.volume = this.volume;
+    if (this.volume > 0) {
+      this.previousVolume = this.volume;
+      this.videoElement.muted = false;
+    } else {
+      this.videoElement.muted = true;
+    }
+  }
+
+  /**
+   * Toggle mute state
+   */
+  toggleMute() {
+    if (this.videoElement.muted || this.videoElement.volume === 0) {
+      this.setVolume(this.previousVolume || 1.0);
+    } else {
+      this.previousVolume = this.videoElement.volume;
+      this.setVolume(0);
+    }
+  }
+
+  /**
+   * Update volume UI components
+   */
+  updateVolumeUI() {
+    const isMuted = this.videoElement.muted || this.videoElement.volume === 0;
+    const slider = document.getElementById('volumeSlider');
+    const muteBtn = document.getElementById('muteBtn');
+
+    if (isMuted) {
+      document.body.classList.add('muted');
+      muteBtn.title = 'Unmute (M)';
+      slider.value = 0;
+    } else {
+      document.body.classList.remove('muted');
+      muteBtn.title = 'Mute (M)';
+      slider.value = this.videoElement.volume;
     }
   }
 

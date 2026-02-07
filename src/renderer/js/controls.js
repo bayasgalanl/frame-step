@@ -61,6 +61,12 @@ class Controls {
           this.toggleShortcutsHelp();
           break;
 
+        case 'm':
+        case 'M':
+          e.preventDefault();
+          this.vc.toggleMute();
+          break;
+
         case 'Escape':
           if (this.shortcutsVisible) {
             this.toggleShortcutsHelp();
@@ -146,6 +152,25 @@ class Controls {
     document.addEventListener('fullscreenchange', () => {
       this.updateFullscreenUI();
     });
+
+    // Mute button
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      this.vc.toggleMute();
+    });
+
+    // Volume slider
+    const volumeSlider = document.getElementById('volumeSlider');
+    volumeSlider.addEventListener('input', (e) => {
+      this.vc.setVolume(parseFloat(e.target.value));
+    });
+
+    // Mouse wheel on volume container for quick adjustment
+    document.querySelector('.volume-container').addEventListener('wheel', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      this.vc.setVolume(this.vc.volume + delta);
+    }, { passive: false });
   }
 
   /**
