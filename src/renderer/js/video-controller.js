@@ -141,6 +141,9 @@ class VideoController {
       // Auto-play after loading
       this.videoElement.play();
 
+      // Resize window to fit video
+      this.resizeWindowToVideo();
+
       return true;
     } catch (error) {
       console.error('Failed to load video:', error);
@@ -445,6 +448,46 @@ class VideoController {
 
     // Reset titlebar
     document.getElementById('titlebarTitle').textContent = 'FrameStep';
+  }
+
+  /**
+   * Resize the application window based on video dimensions
+   */
+  resizeWindowToVideo() {
+    if (!this.metadata) return;
+
+    const videoWidth = this.metadata.width;
+    const videoHeight = this.metadata.height;
+    const aspectRatio = videoWidth / videoHeight;
+
+    // Get screen dimensions
+    const screenWidth = window.screen.availWidth;
+    const screenHeight = window.screen.availHeight;
+
+    // Maximum window size (85% of screen)
+    const maxWidth = Math.round(screenWidth * 0.85);
+    const maxHeight = Math.round(screenHeight * 0.85);
+
+    let targetWidth = videoWidth;
+    let targetHeight = videoHeight + 32; // + titlebar height
+
+    // Adjust if too wide
+    if (targetWidth > maxWidth) {
+      targetWidth = maxWidth;
+      targetHeight = Math.round((targetWidth / aspectRatio) + 32);
+    }
+
+    // Adjust if still too tall
+    if (targetHeight > maxHeight) {
+      targetHeight = maxHeight;
+      targetWidth = Math.round((targetHeight - 32) * aspectRatio);
+    }
+
+    // Ensure minimum dimensions
+    targetWidth = Math.max(800, targetWidth);
+    targetHeight = Math.max(600, targetHeight);
+
+    window.electronAPI.setWindowSize(targetWidth, targetHeight, true);
   }
 
   /**

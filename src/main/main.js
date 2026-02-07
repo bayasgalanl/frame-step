@@ -7,12 +7,13 @@ const ffmpegService = new FFmpegService();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    minWidth: 800,
-    minHeight: 600,
+    width: 800,
+    height: 600,
+    minWidth: 640,
+    minHeight: 480,
     frame: false,
     transparent: true,
+    center: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -49,6 +50,15 @@ ipcMain.on('window-close', () => {
 
 ipcMain.handle('window-is-maximized', () => {
   return mainWindow?.isMaximized() ?? false;
+});
+
+ipcMain.on('set-window-size', (event, { width, height, center }) => {
+  if (mainWindow) {
+    mainWindow.setSize(Math.round(width), Math.round(height));
+    if (center) {
+      mainWindow.center();
+    }
+  }
 });
 
 // Send maximize state changes to renderer
