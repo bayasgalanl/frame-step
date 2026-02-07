@@ -121,12 +121,8 @@ class Controls {
    * Setup control button click handlers
    */
   setupButtonControls() {
-    // Open button
-    document.getElementById('openBtn').addEventListener('click', () => {
-      this.openFile();
-    });
-
     // Play/Pause button
+
     document.getElementById('playPauseBtn').addEventListener('click', () => {
       this.vc.togglePlayPause();
     });
