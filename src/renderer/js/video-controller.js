@@ -402,10 +402,12 @@ class VideoController {
       document.body.classList.add('muted');
       muteBtn.title = 'Unmute (M)';
       slider.value = 0;
+      slider.style.setProperty('--volume-percent', '0%');
     } else {
       document.body.classList.remove('muted');
       muteBtn.title = 'Mute (M)';
       slider.value = this.videoElement.volume;
+      slider.style.setProperty('--volume-percent', `${this.videoElement.volume * 100}%`);
     }
   }
 
