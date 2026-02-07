@@ -6,13 +6,13 @@ class VideoController {
   constructor(uiOverlay) {
     this.ui = uiOverlay;
     this.frameCache = new FrameCache(30);
-    
+
     // DOM Elements
     this.videoElement = document.getElementById('videoElement');
     this.canvas = document.getElementById('frameCanvas');
     this.ctx = this.canvas.getContext('2d');
     this.timelineProgress = document.getElementById('timelineProgress');
-    
+
     // State
     this.filePath = null;
     this.metadata = null;
@@ -20,11 +20,11 @@ class VideoController {
     this.isPlaying = false;
     this.isFrameMode = false; // True when showing extracted frame on canvas
     this.isStepping = false;
-    
+
     // Bind methods
     this.onVideoFrame = this.onVideoFrame.bind(this);
     this.onTimeUpdate = this.onTimeUpdate.bind(this);
-    
+
     // Setup video element events
     this.setupVideoEvents();
   }
@@ -93,49 +93,49 @@ class VideoController {
   async loadVideo(filePath) {
     try {
       this.ui.showLoading();
-      
+
       // Reset state
       this.reset();
       this.filePath = filePath;
-      
+
       // Get metadata from ffprobe
       this.metadata = await window.electronAPI.getVideoMetadata(filePath);
       console.log('Video metadata:', this.metadata);
-      
+
       // Initialize UI
       this.ui.init(this.metadata);
-      
+
       // Load video in video element
       this.videoElement.src = `file://${filePath}`;
       await new Promise((resolve, reject) => {
         this.videoElement.onloadeddata = resolve;
         this.videoElement.onerror = reject;
       });
-      
+
       // Set canvas dimensions
       this.canvas.width = this.metadata.width;
       this.canvas.height = this.metadata.height;
-      
+
       // Update titlebar with filename
       const filename = filePath.split('/').pop().split('\\').pop();
       document.getElementById('titlebarTitle').textContent = `${filename} - FrameStep`;
-      
+
       // Hide drop zone
       document.getElementById('dropZone').classList.add('hidden');
-      
+
       // Enable controls
       this.enableControls(true);
-      
+
       // Show first frame
       this.currentFrame = 0;
       this.ui.update(0, 0);
       this.updateTimeline(0);
-      
+
       this.ui.hideLoading();
-      
+
       // Auto-play after loading
       this.videoElement.play();
-      
+
       return true;
     } catch (error) {
       console.error('Failed to load video:', error);
@@ -152,50 +152,50 @@ class VideoController {
    */
   async stepFrame(delta) {
     if (!this.metadata || this.isStepping) return;
-    
+
     // Pause if playing
     if (this.isPlaying) {
       this.videoElement.pause();
     }
-    
+
     this.isStepping = true;
-    
+
     try {
       // Calculate target frame
       const targetFrame = Math.max(0, Math.min(
         this.currentFrame + delta,
         this.metadata.totalFrames - 1
       ));
-      
+
       // Skip if already at boundary
       if (targetFrame === this.currentFrame) {
         this.isStepping = false;
         return;
       }
-      
+
       // Calculate target time
       const frameDuration = 1 / this.metadata.frameRate;
       const targetTime = targetFrame * frameDuration;
-      
+
       // Use native video seeking (instant - decoder stays warm)
       await this.seekVideoToTime(targetTime);
-      
+
       // Draw current video frame to canvas (instant)
       this.drawVideoToCanvas();
-      
+
       // Update state
       this.currentFrame = targetFrame;
       this.ui.update(targetFrame, targetTime);
       this.ui.showSteppingFeedback();
       this.updateTimeline(targetTime / this.metadata.duration);
-      
+
       // Enter frame mode (show canvas)
       this.enterFrameMode();
-      
+
     } catch (error) {
       console.error('Failed to step frame:', error);
     }
-    
+
     this.isStepping = false;
   }
 
@@ -210,12 +210,12 @@ class VideoController {
         resolve();
         return;
       }
-      
+
       const onSeeked = () => {
         this.videoElement.removeEventListener('seeked', onSeeked);
         resolve();
       };
-      
+
       this.videoElement.addEventListener('seeked', onSeeked);
       this.videoElement.currentTime = time;
     });
@@ -226,9 +226,9 @@ class VideoController {
    */
   drawVideoToCanvas() {
     this.ctx.drawImage(
-      this.videoElement, 
-      0, 0, 
-      this.canvas.width, 
+      this.videoElement,
+      0, 0,
+      this.canvas.width,
       this.canvas.height
     );
   }
@@ -271,7 +271,7 @@ class VideoController {
       this.isFrameMode = false;
       this.videoElement.classList.remove('hidden');
       this.canvas.classList.remove('visible');
-      
+
       // Sync video position to current frame
       const targetTime = this.currentFrame / this.metadata.frameRate;
       this.videoElement.currentTime = targetTime;
@@ -283,7 +283,7 @@ class VideoController {
    */
   togglePlayPause() {
     if (!this.metadata) return;
-    
+
     if (this.isPlaying) {
       this.videoElement.pause();
     } else {
@@ -315,10 +315,10 @@ class VideoController {
    */
   async seekToProgress(progress) {
     if (!this.metadata) return;
-    
+
     const targetTime = progress * this.metadata.duration;
     const targetFrame = Math.round(targetTime * this.metadata.frameRate);
-    
+
     if (this.isFrameMode || this.videoElement.paused) {
       // In frame mode, extract the exact frame
       this.currentFrame = Math.max(0, targetFrame - 1);
@@ -343,13 +343,18 @@ class VideoController {
   updatePlayPauseUI() {
     const playIcon = document.querySelector('#playPauseBtn .play-icon');
     const pauseIcon = document.querySelector('#playPauseBtn .pause-icon');
-    
+
     if (this.isPlaying) {
       playIcon.style.display = 'none';
       pauseIcon.style.display = 'block';
     } else {
       playIcon.style.display = 'block';
       pauseIcon.style.display = 'none';
+    }
+
+    // Show center feedback animation
+    if (this.metadata) {
+      this.ui.showPlaybackFeedback(this.isPlaying);
     }
   }
 
@@ -371,7 +376,7 @@ class VideoController {
     this.videoElement.classList.remove('hidden');
     this.canvas.classList.remove('visible');
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     this.frameCache.clear();
     this.filePath = null;
     this.metadata = null;
@@ -379,12 +384,12 @@ class VideoController {
     this.isPlaying = false;
     this.isFrameMode = false;
     this.isStepping = false;
-    
+
     this.ui.reset();
     this.enableControls(false);
     this.updateTimeline(0);
     this.updatePlayPauseUI();
-    
+
     // Reset titlebar
     document.getElementById('titlebarTitle').textContent = 'FrameStep';
   }

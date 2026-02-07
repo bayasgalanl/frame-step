@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' file:; img-src 'self' data: file:;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' file:; img-src 'self' data: file:;">
   <title>FrameStep</title>
   <link rel="stylesheet" href="styles/main.css">
 </head>
+
 <body>
   <div class="app-container">
     <!-- VS Code style titlebar -->
@@ -58,21 +61,22 @@
       <div class="titlebar-controls">
         <button class="titlebar-btn" id="minimizeBtn" title="Minimize">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <rect fill="currentColor" width="10" height="1" y="4.5"/>
+            <rect fill="currentColor" width="10" height="1" y="4.5" />
           </svg>
         </button>
         <button class="titlebar-btn" id="maximizeBtn" title="Maximize">
           <svg class="maximize-icon" width="10" height="10" viewBox="0 0 10 10">
-            <rect fill="none" stroke="currentColor" stroke-width="1" x="0.5" y="0.5" width="9" height="9"/>
+            <rect fill="none" stroke="currentColor" stroke-width="1" x="0.5" y="0.5" width="9" height="9" />
           </svg>
           <svg class="restore-icon" width="10" height="10" viewBox="0 0 10 10" style="display: none;">
-            <rect fill="none" stroke="currentColor" stroke-width="1" x="2.5" y="0.5" width="7" height="7"/>
-            <polyline fill="none" stroke="currentColor" stroke-width="1" points="0.5,2.5 0.5,9.5 7.5,9.5 7.5,2.5"/>
+            <rect fill="none" stroke="currentColor" stroke-width="1" x="2.5" y="0.5" width="7" height="7" />
+            <polyline fill="none" stroke="currentColor" stroke-width="1" points="0.5,2.5 0.5,9.5 7.5,9.5 7.5,2.5" />
           </svg>
         </button>
         <button class="titlebar-btn titlebar-btn-close" id="closeBtn" title="Close">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <path fill="currentColor" d="M1.41 0L5 3.59 8.59 0 10 1.41 6.41 5 10 8.59 8.59 10 5 6.41 1.41 10 0 8.59 3.59 5 0 1.41z"/>
+            <path fill="currentColor"
+              d="M1.41 0L5 3.59 8.59 0 10 1.41 6.41 5 10 8.59 8.59 10 5 6.41 1.41 10 0 8.59 3.59 5 0 1.41z" />
           </svg>
         </button>
       </div>
@@ -82,15 +86,15 @@
     <div class="video-container" id="videoContainer">
       <!-- Video element for playback -->
       <video id="videoElement" preload="auto"></video>
-      
+
       <!-- Canvas for frame-accurate display -->
       <canvas id="frameCanvas"></canvas>
-      
+
       <!-- Drop zone overlay -->
       <div class="drop-zone" id="dropZone">
         <div class="drop-zone-content">
           <svg class="drop-icon" viewBox="0 0 24 24" width="64" height="64">
-            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
           </svg>
           <p>Drop video file here</p>
           <p class="drop-hint">or press <kbd>O</kbd> to open</p>
@@ -108,7 +112,8 @@
       <!-- VFR Warning -->
       <div class="vfr-warning" id="vfrWarning">
         <svg viewBox="0 0 24 24" width="16" height="16">
-          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          <path fill="currentColor"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
         </svg>
         <span>Variable frame rate detected</span>
       </div>
@@ -116,6 +121,20 @@
       <!-- Loading indicator -->
       <div class="loading-indicator" id="loadingIndicator">
         <div class="spinner"></div>
+      </div>
+
+      <!-- Playback feedback (center) -->
+      <div class="playback-feedback" id="playbackFeedback">
+        <div class="feedback-icon play-feedback" id="playFeedback">
+          <svg viewBox="0 0 24 24" width="60" height="60">
+            <path fill="currentColor" d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+        <div class="feedback-icon pause-feedback" id="pauseFeedback">
+          <svg viewBox="0 0 24 24" width="60" height="60">
+            <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -125,16 +144,17 @@
       <div class="controls-left">
         <button class="control-btn" id="openBtn" title="Open file (O)">
           <svg viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H5V8h14v12z"/>
+            <path fill="currentColor"
+              d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H5V8h14v12z" />
           </svg>
         </button>
-        
+
         <button class="control-btn" id="playPauseBtn" title="Play/Pause (Space)" disabled>
           <svg class="play-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M8 5v14l11-7z"/>
+            <path fill="currentColor" d="M8 5v14l11-7z" />
           </svg>
           <svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" style="display: none;">
-            <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
           </svg>
         </button>
       </div>
@@ -152,13 +172,13 @@
       <div class="controls-right">
         <button class="control-btn frame-btn" id="prevFrameBtn" title="Previous frame (←)" disabled>
           <svg viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            <path fill="currentColor" d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
           </svg>
         </button>
-        
+
         <button class="control-btn frame-btn" id="nextFrameBtn" title="Next frame (→)" disabled>
           <svg viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            <path fill="currentColor" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
           </svg>
         </button>
 
@@ -183,4 +203,5 @@
   <script src="js/controls.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

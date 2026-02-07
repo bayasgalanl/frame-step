@@ -11,9 +11,11 @@ class UIOverlay {
       timestamp: document.getElementById('timestamp'),
       timeDisplay: document.getElementById('timeDisplay'),
       vfrWarning: document.getElementById('vfrWarning'),
-      loadingIndicator: document.getElementById('loadingIndicator')
+      loadingIndicator: document.getElementById('loadingIndicator'),
+      playFeedback: document.getElementById('playFeedback'),
+      pauseFeedback: document.getElementById('pauseFeedback')
     };
-    
+
     this.totalFramesCount = 0;
     this.duration = 0;
   }
@@ -25,17 +27,17 @@ class UIOverlay {
   init(metadata) {
     this.totalFramesCount = metadata.totalFrames;
     this.duration = metadata.duration;
-    
+
     this.elements.totalFrames.textContent = metadata.totalFrames.toLocaleString();
     this.elements.overlay.classList.add('visible');
-    
+
     // Show VFR warning if applicable
     if (metadata.isVFR) {
       this.elements.vfrWarning.classList.add('visible');
     } else {
       this.elements.vfrWarning.classList.remove('visible');
     }
-    
+
     this.updateTimeDisplay(0, metadata.duration);
   }
 
@@ -70,7 +72,7 @@ class UIOverlay {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-    
+
     if (hrs > 0) {
       return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
@@ -87,7 +89,7 @@ class UIOverlay {
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
     const ms = Math.floor((seconds % 1) * 1000);
-    
+
     return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
   }
 
@@ -113,6 +115,30 @@ class UIOverlay {
    */
   hideLoading() {
     this.elements.loadingIndicator.classList.remove('visible');
+  }
+
+  /**
+   * Show play/pause feedback icon
+   * @param {boolean} isPlaying - True if now playing, false if now paused
+   */
+  showPlaybackFeedback(isPlaying) {
+    const playIcon = this.elements.playFeedback;
+    const pauseIcon = this.elements.pauseFeedback;
+
+    // Reset both
+    playIcon.classList.remove('animate');
+    pauseIcon.classList.remove('animate');
+
+    // Trigger reflow
+    void playIcon.offsetWidth;
+    void pauseIcon.offsetWidth;
+
+    // Show the correct one
+    if (isPlaying) {
+      playIcon.classList.add('animate');
+    } else {
+      pauseIcon.classList.add('animate');
+    }
   }
 
   /**
