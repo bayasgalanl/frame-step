@@ -48,6 +48,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border-color);
+  position: relative;
 }
 
 /* Sharp corners when maximized or fullscreen */
@@ -380,9 +381,24 @@ kbd {
   display: flex;
   flex-direction: column;
   padding: 8px 16px 12px;
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
+  background: transparent;
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+body.hide-controls {
+  cursor: none;
+}
+
+body.hide-controls .controls-bar {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .controls-main {

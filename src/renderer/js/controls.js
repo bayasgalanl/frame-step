@@ -7,11 +7,15 @@ class Controls {
     this.vc = videoController;
     this.shortcutsVisible = false;
 
+    this.isMouseOverControls = false;
+    this.autoHideTimer = null;
+
     this.setupKeyboardControls();
     this.setupMouseControls();
     this.setupButtonControls();
     this.setupTimelineControls();
     this.setupDragDrop();
+    this.setupAutoHide();
   }
 
   /**
@@ -171,6 +175,50 @@ class Controls {
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       this.vc.setVolume(this.vc.volume + delta);
     }, { passive: false });
+  }
+
+  /**
+   * Setup auto-hide functionality for controls
+   */
+  setupAutoHide() {
+    const controlsBar = document.getElementById('controlsBar');
+    const hideTimeout = 3000; // 3 seconds
+
+    const showControls = () => {
+      document.body.classList.remove('hide-controls');
+      this.resetAutoHideTimer();
+    };
+
+    const hideControls = () => {
+      if (!this.isMouseOverControls) {
+        document.body.classList.add('hide-controls');
+      }
+    };
+
+    this.resetAutoHideTimer = () => {
+      if (this.autoHideTimer) {
+        clearTimeout(this.autoHideTimer);
+      }
+      this.autoHideTimer = setTimeout(hideControls, hideTimeout);
+    };
+
+    // Show on mouse move/down
+    document.addEventListener('mousemove', showControls);
+    document.addEventListener('mousedown', showControls);
+
+    // Prevent hiding when mouse is over controls
+    controlsBar.addEventListener('mouseenter', () => {
+      this.isMouseOverControls = true;
+      showControls();
+    });
+
+    controlsBar.addEventListener('mouseleave', () => {
+      this.isMouseOverControls = false;
+      this.resetAutoHideTimer();
+    });
+
+    // Initial timer
+    this.resetAutoHideTimer();
   }
 
   /**
