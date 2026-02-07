@@ -296,6 +296,13 @@ kbd {
   display: none;
   z-index: 20;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.hide-controls .frame-overlay {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
 }
 
 .frame-overlay.visible {

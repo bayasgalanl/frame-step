@@ -8,6 +8,7 @@ class Controls {
     this.shortcutsVisible = false;
 
     this.isMouseOverControls = false;
+    this.isMouseOverOverlay = false;
     this.autoHideTimer = null;
 
     this.setupKeyboardControls();
@@ -190,7 +191,7 @@ class Controls {
     };
 
     const hideControls = () => {
-      if (!this.isMouseOverControls) {
+      if (!this.isMouseOverControls && !this.isMouseOverOverlay) {
         document.body.classList.add('hide-controls');
       }
     };
@@ -215,6 +216,18 @@ class Controls {
 
     controlsBar.addEventListener('mouseleave', () => {
       this.isMouseOverControls = false;
+      this.resetAutoHideTimer();
+    });
+
+    // Prevent hiding when mouse is over frame overlay
+    const frameOverlay = document.getElementById('frameOverlay');
+    frameOverlay.addEventListener('mouseenter', () => {
+      this.isMouseOverOverlay = true;
+      showControls();
+    });
+
+    frameOverlay.addEventListener('mouseleave', () => {
+      this.isMouseOverOverlay = false;
       this.resetAutoHideTimer();
     });
 
