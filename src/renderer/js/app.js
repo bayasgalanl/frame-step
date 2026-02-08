@@ -56,6 +56,7 @@
     console.log('  O - Open file');
     console.log('  F - Toggle fullscreen');
     console.log('  < / > - Playback speed');
+    console.log('  C - Toggle frame counter');
     console.log('  ? - Show shortcuts help');
   }
 
@@ -125,6 +126,12 @@
       } else {
         document.documentElement.requestFullscreen();
       }
+    });
+
+    // Menu: View > Frame Counter
+    document.getElementById('menuFrameCounter').addEventListener('click', () => {
+      closeAllMenus();
+      controls.toggleFrameOverlay();
     });
 
     // Menu: Help > Shortcuts

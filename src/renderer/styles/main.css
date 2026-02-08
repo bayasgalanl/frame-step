@@ -329,6 +329,10 @@ kbd {
   transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body.frame-overlay-hidden .frame-overlay {
+  display: none !important;
+}
+
 body.hide-controls .frame-overlay {
   opacity: 0;
   transform: translateY(-10px);

@@ -6,6 +6,7 @@ class Controls {
   constructor(videoController) {
     this.vc = videoController;
     this.shortcutsVisible = false;
+    this.frameOverlayVisible = false;
 
     this.isMouseOverControls = false;
     this.isMouseOverOverlay = false;
@@ -17,6 +18,7 @@ class Controls {
     this.setupTimelineControls();
     this.setupDragDrop();
     this.setupAutoHide();
+    this.setFrameOverlayVisible(false);
   }
 
   /**
@@ -87,6 +89,14 @@ class Controls {
         case 'M':
           e.preventDefault();
           this.vc.toggleMute();
+          break;
+
+        case 'c':
+        case 'C':
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            this.toggleFrameOverlay();
+          }
           break;
 
         case '<':
@@ -433,6 +443,33 @@ class Controls {
       help.classList.add('visible');
     } else {
       help.classList.remove('visible');
+    }
+  }
+
+  /**
+   * Toggle frame counter visibility
+   */
+  toggleFrameOverlay() {
+    this.setFrameOverlayVisible(!this.frameOverlayVisible);
+  }
+
+  /**
+   * Set frame counter visibility
+   * @param {boolean} visible
+   */
+  setFrameOverlayVisible(visible) {
+    this.frameOverlayVisible = visible;
+    document.body.classList.toggle('frame-overlay-hidden', !visible);
+    this.updateFrameOverlayMenuLabel();
+  }
+
+  /**
+   * Update menu label for frame counter
+   */
+  updateFrameOverlayMenuLabel() {
+    const label = document.getElementById('menuFrameCounterLabel');
+    if (label) {
+      label.textContent = this.frameOverlayVisible ? 'Hide Frame Counter' : 'Show Frame Counter';
     }
   }
 }
