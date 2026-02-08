@@ -20,6 +20,8 @@ An Electron-based video player with true frame-accurate stepping capabilities. N
 - **Custom titlebar** - Modern frameless window design
 - **Drag & drop** - Open videos by dropping files onto the player
 - **Timeline seeking** - Click on the progress bar to jump to any position
+- **Playback speed control** - 0.25x to 2x in 0.25x steps
+- **Frame counter overlay** - Toggle visibility from View menu or shortcut
 
 ## Installation
 
@@ -59,6 +61,8 @@ npm run build:linux  # Linux
 | `O` | Open file |
 | `F` | Toggle fullscreen |
 | `M` | Toggle mute |
+| `<` / `>` | Decrease / increase playback speed |
+| `C` | Toggle frame counter |
 | `R` | Restart (go to beginning) |
 | `?` | Show shortcuts help |
 | `Escape` | Close shortcuts help |
