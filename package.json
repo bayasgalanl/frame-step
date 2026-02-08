@@ -48,16 +48,24 @@
       }
     ],
     "mac": {
-      "category": "public.app-category.video"
+      "category": "public.app-category.video",
+      "icon": "assets/Icon.png"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "assets/Icon.png"
     },
     "linux": {
       "target": [
         "deb"
       ],
-      "category": "Video"
+      "category": "Video",
+      "icon": "assets/icons",
+      "desktop": {
+        "Name": "FrameStep",
+        "Comment": "Electron video player with true frame-stepping capabilities",
+        "Categories": "Video"
+      }
     }
   }
 }
