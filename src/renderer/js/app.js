@@ -23,10 +23,18 @@
     // Setup custom titlebar
     setupTitlebar(videoController, controls);
 
-    // Listen for files opened via menu
-    window.electronAPI.onFileOpened(async (filePath) => {
-      console.log('File opened via menu:', filePath);
-      await videoController.loadVideo(filePath);
+    // Listen for files opened via menu or double-click
+    window.electronAPI.onFileOpened(async (filePaths) => {
+      if (Array.isArray(filePaths)) {
+        for (const filePath of filePaths) {
+          console.log('File opened:', filePath);
+          await videoController.loadVideo(filePath);
+          // Optionally, add logic to handle multiple videos (e.g., playlist, tabs)
+        }
+      } else {
+        console.log('File opened:', filePaths);
+        await videoController.loadVideo(filePaths);
+      }
     });
 
     // Handle command line arguments (if video file was opened with the app)

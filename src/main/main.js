@@ -75,6 +75,24 @@ function setupWindowEvents() {
 app.whenReady().then(() => {
   createWindow();
 
+  // Handle files opened via double-click or command line
+  if (process.argv.length > 1) {
+    // Filter for video files
+    const videoExtensions = ['.mp4', '.mkv', '.avi', '.mov', '.webm', '.wmv', '.flv', '.m4v'];
+    const videoFiles = process.argv.slice(1).filter(arg => videoExtensions.some(ext => arg.toLowerCase().endsWith(ext)));
+    if (videoFiles.length > 0) {
+      mainWindow.webContents.once('did-finish-load', () => {
+        mainWindow.webContents.send('file-opened', videoFiles);
+      });
+    }
+  }
+
+  app.on('open-file', (event, filePath) => {
+    event.preventDefault();
+    // Send file to renderer
+    mainWindow.webContents.send('file-opened', [filePath]);
+  });
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
