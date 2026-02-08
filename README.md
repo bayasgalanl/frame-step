@@ -54,7 +54,10 @@ npm run build:linux  # Linux
 | `Shift + →` | Jump forward 10 frames |
 | `O` | Open file |
 | `F` | Toggle fullscreen |
+| `M` | Toggle mute |
+| `R` | Restart (go to beginning) |
 | `?` | Show shortcuts help |
+| `Escape` | Close shortcuts help |
 
 ## Mouse Controls
 
