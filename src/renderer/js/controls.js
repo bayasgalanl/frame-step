@@ -30,6 +30,23 @@ class Controls {
       }
 
       switch (e.key) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            const digit = parseInt(e.key, 10);
+            await this.vc.seekToProgress(digit / 10);
+          }
+          break;
+
         case 'ArrowLeft':
           e.preventDefault();
           await this.vc.stepFrame(e.shiftKey ? -10 : -1);
