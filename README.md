@@ -4,6 +4,10 @@
   <img src="assets/Icon.png" width="128" height="128" alt="FrameStep Icon">
 </p>
 
+<p align="center">
+  <img src="assets/Screenshot1.png" alt="FrameStep Screenshot">
+</p>
+
 An Electron-based video player with true frame-accurate stepping capabilities. Navigate videos frame-by-frame with precision using FFmpeg for frame extraction.
 
 ## Features
