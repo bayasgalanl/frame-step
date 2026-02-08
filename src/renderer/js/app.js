@@ -55,6 +55,7 @@
     console.log('  Mouse wheel (when paused) - Scrub frames');
     console.log('  O - Open file');
     console.log('  F - Toggle fullscreen');
+    console.log('  < / > - Playback speed');
     console.log('  ? - Show shortcuts help');
   }
 

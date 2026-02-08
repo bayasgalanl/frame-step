@@ -89,6 +89,22 @@ class Controls {
           this.vc.toggleMute();
           break;
 
+        case '<':
+        case ',':
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            this.vc.adjustPlaybackRate(-1);
+          }
+          break;
+
+        case '>':
+        case '.':
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            this.vc.adjustPlaybackRate(1);
+          }
+          break;
+
         case 'r':
         case 'R':
           e.preventDefault();
@@ -204,6 +220,15 @@ class Controls {
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       this.vc.setVolume(this.vc.volume + delta);
     }, { passive: false });
+
+    // Playback speed buttons
+    document.getElementById('speedDownBtn').addEventListener('click', () => {
+      this.vc.adjustPlaybackRate(-1);
+    });
+
+    document.getElementById('speedUpBtn').addEventListener('click', () => {
+      this.vc.adjustPlaybackRate(1);
+    });
   }
 
   /**

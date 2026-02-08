@@ -22,6 +22,10 @@ class VideoController {
     this.isStepping = false;
     this.volume = 1.0;
     this.previousVolume = 1.0;
+    this.playbackRate = 1.0;
+    this.playbackRateStep = 0.25;
+    this.minPlaybackRate = 0.25;
+    this.maxPlaybackRate = 2.0;
 
     // Bind methods
     this.onVideoFrame = this.onVideoFrame.bind(this);
@@ -59,6 +63,11 @@ class VideoController {
     this.videoElement.addEventListener('timeupdate', this.onTimeUpdate);
     this.videoElement.addEventListener('volumechange', () => {
       this.updateVolumeUI();
+    });
+
+    this.videoElement.addEventListener('ratechange', () => {
+      this.playbackRate = this.videoElement.playbackRate;
+      this.updatePlaybackRateUI();
     });
 
     // Use requestVideoFrameCallback for frame-accurate tracking during playback
@@ -116,6 +125,9 @@ class VideoController {
         this.videoElement.onloadeddata = resolve;
         this.videoElement.onerror = reject;
       });
+
+      // Re-apply playback rate after source load
+      this.setPlaybackRate(this.playbackRate);
 
       // Set canvas dimensions
       this.canvas.width = this.metadata.width;
@@ -423,6 +435,66 @@ class VideoController {
   }
 
   /**
+   * Normalize playback rate to step increments and clamp to min/max
+   * @param {number} value 
+   */
+  normalizePlaybackRate(value) {
+    const clamped = Math.max(this.minPlaybackRate, Math.min(this.maxPlaybackRate, value));
+    const stepped = Math.round(clamped / this.playbackRateStep) * this.playbackRateStep;
+    return Number(stepped.toFixed(2));
+  }
+
+  /**
+   * Set playback speed
+   * @param {number} value 
+   */
+  setPlaybackRate(value) {
+    const next = this.normalizePlaybackRate(value);
+    this.playbackRate = next;
+    this.videoElement.playbackRate = next;
+    this.updatePlaybackRateUI();
+  }
+
+  /**
+   * Adjust playback speed by step (-1 or +1)
+   * @param {number} direction 
+   */
+  adjustPlaybackRate(direction) {
+    if (!this.metadata) return;
+    this.setPlaybackRate(this.playbackRate + (direction * this.playbackRateStep));
+  }
+
+  /**
+   * Update playback rate UI components
+   */
+  updatePlaybackRateUI() {
+    const display = document.getElementById('speedDisplay');
+    const downBtn = document.getElementById('speedDownBtn');
+    const upBtn = document.getElementById('speedUpBtn');
+    const hasVideo = !!this.metadata;
+    const formatted = this.formatPlaybackRate(this.playbackRate);
+
+    if (display) {
+      display.textContent = `${formatted}x`;
+    }
+
+    if (downBtn) {
+      downBtn.disabled = !hasVideo || this.playbackRate <= this.minPlaybackRate;
+    }
+    if (upBtn) {
+      upBtn.disabled = !hasVideo || this.playbackRate >= this.maxPlaybackRate;
+    }
+  }
+
+  /**
+   * Format playback rate for display
+   * @param {number} value 
+   */
+  formatPlaybackRate(value) {
+    return String(value).includes('.') ? value.toFixed(2).replace(/\.?0+$/, '') : `${value}`;
+  }
+
+  /**
    * Enable or disable control buttons
    * @param {boolean} enabled 
    */
@@ -431,6 +503,7 @@ class VideoController {
     document.getElementById('prevFrameBtn').disabled = !enabled;
     document.getElementById('nextFrameBtn').disabled = !enabled;
     document.getElementById('restartBtn').disabled = !enabled;
+    this.updatePlaybackRateUI();
   }
 
   /**
@@ -449,11 +522,14 @@ class VideoController {
     this.isPlaying = false;
     this.isFrameMode = false;
     this.isStepping = false;
+    this.playbackRate = 1.0;
+    this.videoElement.playbackRate = this.playbackRate;
 
     this.ui.reset();
     this.enableControls(false);
     this.updateTimeline(0);
     this.updatePlayPauseUI();
+    this.updatePlaybackRateUI();
 
     // Reset titlebar
     document.getElementById('titlebarTitle').textContent = 'FrameStep';
@@ -510,7 +586,8 @@ class VideoController {
       currentFrame: this.currentFrame,
       totalFrames: this.metadata?.totalFrames || 0,
       currentTime: this.currentFrame / (this.metadata?.frameRate || 1),
-      duration: this.metadata?.duration || 0
+      duration: this.metadata?.duration || 0,
+      playbackRate: this.playbackRate
     };
   }
 }

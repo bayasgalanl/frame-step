@@ -490,6 +490,30 @@ body.hide-controls .controls-bar {
   gap: 4px;
 }
 
+/* Playback Speed */
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.speed-display {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: center;
+}
+
+.speed-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 #volumeSlider {
   -webkit-appearance: none;
   appearance: none;

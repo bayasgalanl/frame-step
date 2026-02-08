@@ -196,6 +196,12 @@
             </svg>
           </button>
 
+          <div class="speed-control" id="speedControl">
+            <button class="control-btn speed-btn" id="speedDownBtn" title="Decrease speed (<)" disabled>-</button>
+            <span class="speed-display" id="speedDisplay">1x</span>
+            <button class="control-btn speed-btn" id="speedUpBtn" title="Increase speed (>)" disabled>+</button>
+          </div>
+
           <span class="time-display" id="timeDisplay">00:00 / 00:00</span>
 
           <button class="control-btn" id="fullscreenBtn" title="Enter fullscreen (F)">
@@ -222,6 +228,7 @@
       <div class="shortcut"><kbd>O</kbd> Open file</div>
       <div class="shortcut"><kbd>F</kbd> Toggle Fullscreen</div>
       <div class="shortcut"><kbd>M</kbd> Mute/Unmute</div>
+      <div class="shortcut"><kbd>&lt;</kbd><kbd>&gt;</kbd> Playback speed</div>
       <div class="shortcut"><kbd>R</kbd> Restart</div>
       <div class="shortcut"><kbd>0</kbd>-<kbd>9</kbd> Seek 0-90%</div>
       <div class="shortcut"><kbd>?</kbd> Toggle help</div>
