@@ -364,6 +364,7 @@ class Controls {
    */
   setupDragDrop() {
     const dropZone = document.getElementById('dropZone');
+    const dropZoneContent = dropZone.querySelector('.drop-zone-content');
     const videoContainer = document.getElementById('videoContainer');
 
     // Prevent default drag behaviors
@@ -406,7 +407,7 @@ class Controls {
     });
 
     // Click on drop zone to open file dialog
-    dropZone.addEventListener('click', (e) => {
+    dropZoneContent.addEventListener('click', (e) => {
       if (!e.target.closest('kbd')) {
         this.openFile();
       }

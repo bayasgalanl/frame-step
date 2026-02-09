@@ -284,6 +284,7 @@ body.maximized .app-container,
   border-radius: 16px;
   color: var(--text-secondary);
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .drop-icon {
