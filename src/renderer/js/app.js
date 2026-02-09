@@ -56,6 +56,7 @@
     console.log('  O - Open file');
     console.log('  F - Toggle fullscreen');
     console.log('  < / > - Playback speed');
+    console.log('  Ctrl + C - Capture frame');
     console.log('  C - Toggle frame counter');
     console.log('  ? - Show shortcuts help');
   }
@@ -116,6 +117,12 @@
       if (filePath) {
         await videoController.loadVideo(filePath);
       }
+    });
+
+    // Menu: File > Capture Frame
+    document.getElementById('menuCaptureFrame').addEventListener('click', () => {
+      closeAllMenus();
+      controls.captureFrameToClipboard();
     });
 
     // Menu: View > Fullscreen

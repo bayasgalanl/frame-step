@@ -14,6 +14,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   extractFramesBatch: (filePath, frameNumbers, frameRate) =>
     ipcRenderer.invoke('extract-frames-batch', filePath, frameNumbers, frameRate),
 
+  // Clipboard
+  copyImageToClipboard: (dataUrl) =>
+    ipcRenderer.invoke('copy-image-to-clipboard', dataUrl),
+
   // Event listeners
   onFileOpened: (callback) => {
     ipcRenderer.on('file-opened', (event, filePath) => callback(filePath));

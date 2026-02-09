@@ -61,6 +61,7 @@ npm run build:linux  # Linux
 | `O` | Open file |
 | `F` | Toggle fullscreen |
 | `M` | Toggle mute |
+| `Ctrl + C` | Capture frame |
 | `<` / `>` | Decrease / increase playback speed |
 | `C` | Toggle frame counter |
 | `R` | Restart (go to beginning) |

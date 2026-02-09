@@ -13,11 +13,13 @@ class UIOverlay {
       vfrWarning: document.getElementById('vfrWarning'),
       loadingIndicator: document.getElementById('loadingIndicator'),
       playFeedback: document.getElementById('playFeedback'),
-      pauseFeedback: document.getElementById('pauseFeedback')
+      pauseFeedback: document.getElementById('pauseFeedback'),
+      clipboardToast: document.getElementById('clipboardToast')
     };
 
     this.totalFramesCount = 0;
     this.duration = 0;
+    this.clipboardToastTimer = null;
   }
 
   /**
@@ -139,6 +141,27 @@ class UIOverlay {
     } else {
       pauseIcon.classList.add('animate');
     }
+  }
+
+  /**
+   * Show clipboard feedback toast
+   * @param {boolean} success 
+   */
+  showClipboardToast(success) {
+    const toast = this.elements.clipboardToast;
+    if (!toast) return;
+
+    toast.textContent = success ? 'Copied frame to clipboard' : 'Failed to copy frame';
+    toast.classList.add('visible');
+
+    if (this.clipboardToastTimer) {
+      clearTimeout(this.clipboardToastTimer);
+    }
+
+    this.clipboardToastTimer = setTimeout(() => {
+      toast.classList.remove('visible');
+      this.clipboardToastTimer = null;
+    }, 1500);
   }
 
   /**

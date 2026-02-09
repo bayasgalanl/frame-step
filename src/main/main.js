@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, clipboard, nativeImage } = require('electron');
 const path = require('path');
 const FFmpegService = require('./ffmpeg-service');
 
@@ -146,5 +146,16 @@ ipcMain.handle('extract-frames-batch', async (event, filePath, frameNumbers, fra
   } catch (error) {
     console.error('Error extracting frames batch:', error);
     throw error;
+  }
+});
+
+ipcMain.handle('copy-image-to-clipboard', (event, dataUrl) => {
+  try {
+    const image = nativeImage.createFromDataURL(dataUrl);
+    clipboard.writeImage(image);
+    return true;
+  } catch (error) {
+    console.error('Error copying image to clipboard:', error);
+    return false;
   }
 });

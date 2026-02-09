@@ -631,8 +631,9 @@ body.muted .volume-off-icon {
 .shortcuts-help {
   position: absolute;
   bottom: 80px;
-  right: 16px;
-  padding: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 14px;
   background: var(--overlay-bg);
   border-radius: 8px;
   backdrop-filter: blur(8px);
@@ -640,23 +641,34 @@ body.muted .volume-off-icon {
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: none;
   z-index: 100;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 12px;
 }
 
 .shortcuts-help.visible {
-  display: block;
+  display: grid;
+}
+
+.shortcuts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shortcuts-title {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .shortcut {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
   font-size: 13px;
   color: var(--text-secondary);
-}
-
-.shortcut:last-child {
-  margin-bottom: 0;
 }
 
 .shortcut kbd {
@@ -784,4 +796,26 @@ button:focus-visible {
     opacity: 0;
     transform: scale(0.8);
   }
+}
+
+/* Clipboard Toast */
+.clipboard-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%) translateY(8px);
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 50;
+}
+
+.clipboard-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

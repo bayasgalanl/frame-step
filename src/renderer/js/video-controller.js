@@ -435,6 +435,37 @@ class VideoController {
   }
 
   /**
+   * Capture current frame and copy to clipboard
+   */
+  async captureFrameToClipboard() {
+    if (!this.metadata) return false;
+
+    try {
+      let sourceCanvas = this.canvas;
+
+      if (!this.isFrameMode) {
+        const captureCanvas = document.createElement('canvas');
+        const width = this.videoElement.videoWidth || this.metadata.width;
+        const height = this.videoElement.videoHeight || this.metadata.height;
+        captureCanvas.width = width;
+        captureCanvas.height = height;
+        const ctx = captureCanvas.getContext('2d');
+        ctx.drawImage(this.videoElement, 0, 0, width, height);
+        sourceCanvas = captureCanvas;
+      }
+
+      const dataUrl = sourceCanvas.toDataURL('image/png');
+      const success = await window.electronAPI.copyImageToClipboard(dataUrl);
+      this.ui.showClipboardToast(!!success);
+      return success;
+    } catch (error) {
+      console.error('Failed to capture frame:', error);
+      this.ui.showClipboardToast(false);
+      return false;
+    }
+  }
+
+  /**
    * Normalize playback rate to step increments and clamp to min/max
    * @param {number} value 
    */

@@ -29,6 +29,10 @@
                 <span>Open Video</span>
                 <span class="shortcut">O</span>
               </div>
+              <div class="menu-option" id="menuCaptureFrame">
+                <span>Capture Frame</span>
+                <span class="shortcut">Ctrl+C</span>
+              </div>
             </div>
           </div>
           <div class="menu-item" id="menuView">
@@ -138,6 +142,9 @@
           </svg>
         </div>
       </div>
+
+      <!-- Clipboard feedback -->
+      <div class="clipboard-toast" id="clipboardToast">Copied frame to clipboard</div>
     </div>
 
     <!-- Controls bar -->
@@ -225,18 +232,39 @@
 
     <!-- Keyboard shortcuts help -->
     <div class="shortcuts-help" id="shortcutsHelp">
-      <div class="shortcut"><kbd>Space</kbd> Play/Pause</div>
-      <div class="shortcut"><kbd>←</kbd><kbd>→</kbd> ±1 Frame</div>
-      <div class="shortcut"><kbd>Shift</kbd>+<kbd>←</kbd><kbd>→</kbd> ±10 Frames</div>
-      <div class="shortcut"><kbd>Scroll</kbd> Scrub frames</div>
-      <div class="shortcut"><kbd>O</kbd> Open file</div>
-      <div class="shortcut"><kbd>F</kbd> Toggle Fullscreen</div>
-      <div class="shortcut"><kbd>M</kbd> Mute/Unmute</div>
-      <div class="shortcut"><kbd>&lt;</kbd><kbd>&gt;</kbd> Playback speed</div>
-      <div class="shortcut"><kbd>C</kbd> Toggle frame counter</div>
-      <div class="shortcut"><kbd>R</kbd> Restart</div>
-      <div class="shortcut"><kbd>0</kbd>-<kbd>9</kbd> Seek 0-90%</div>
-      <div class="shortcut"><kbd>?</kbd> Toggle help</div>
+      <div class="shortcuts-section">
+        <div class="shortcuts-title">Playback</div>
+        <div class="shortcut"><kbd>Space</kbd> Play/Pause</div>
+        <div class="shortcut"><kbd>M</kbd> Mute/Unmute</div>
+        <div class="shortcut"><kbd>&lt;</kbd><kbd>&gt;</kbd> Playback speed</div>
+        <div class="shortcut"><kbd>R</kbd> Restart</div>
+      </div>
+
+      <div class="shortcuts-section">
+        <div class="shortcuts-title">Navigation</div>
+        <div class="shortcut"><kbd>←</kbd><kbd>→</kbd> ±1 Frame</div>
+        <div class="shortcut"><kbd>Shift</kbd>+<kbd>←</kbd><kbd>→</kbd> ±10 Frames</div>
+        <div class="shortcut"><kbd>Scroll</kbd> Scrub frames</div>
+        <div class="shortcut"><kbd>0</kbd>-<kbd>9</kbd> Seek 0-90%</div>
+      </div>
+
+      <div class="shortcuts-section">
+        <div class="shortcuts-title">View</div>
+        <div class="shortcut"><kbd>F</kbd> Toggle Fullscreen</div>
+        <div class="shortcut"><kbd>C</kbd> Toggle frame counter</div>
+      </div>
+
+      <div class="shortcuts-section">
+        <div class="shortcuts-title">File & Tools</div>
+        <div class="shortcut"><kbd>O</kbd> Open file</div>
+        <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>C</kbd> Capture frame</div>
+      </div>
+
+      <div class="shortcuts-section">
+        <div class="shortcuts-title">Help</div>
+        <div class="shortcut"><kbd>?</kbd> Toggle help</div>
+        <div class="shortcut"><kbd>Esc</kbd> Close help</div>
+      </div>
     </div>
   </div>
 

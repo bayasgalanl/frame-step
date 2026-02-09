@@ -93,7 +93,10 @@ class Controls {
 
         case 'c':
         case 'C':
-          if (!e.ctrlKey && !e.metaKey) {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            this.captureFrameToClipboard();
+          } else {
             e.preventDefault();
             this.toggleFrameOverlay();
           }
@@ -246,14 +249,22 @@ class Controls {
    */
   setupAutoHide() {
     const controlsBar = document.getElementById('controlsBar');
+    const videoElement = document.getElementById('videoElement');
     const hideTimeout = 3000; // 3 seconds
+    const shouldAutoHide = () => !!this.vc && !!this.vc.metadata;
 
     const showControls = () => {
       document.body.classList.remove('hide-controls');
-      this.resetAutoHideTimer();
+      if (shouldAutoHide()) {
+        this.resetAutoHideTimer();
+      }
     };
 
     const hideControls = () => {
+      if (!shouldAutoHide()) {
+        document.body.classList.remove('hide-controls');
+        return;
+      }
       if (!this.isMouseOverControls && !this.isMouseOverOverlay) {
         document.body.classList.add('hide-controls');
       }
@@ -263,7 +274,9 @@ class Controls {
       if (this.autoHideTimer) {
         clearTimeout(this.autoHideTimer);
       }
-      this.autoHideTimer = setTimeout(hideControls, hideTimeout);
+      if (shouldAutoHide()) {
+        this.autoHideTimer = setTimeout(hideControls, hideTimeout);
+      }
     };
 
     // Show on mouse move/down or key press
@@ -296,6 +309,20 @@ class Controls {
 
     // Initial timer
     this.resetAutoHideTimer();
+    document.body.classList.remove('hide-controls');
+
+    // Start auto-hide when a video loads
+    videoElement.addEventListener('loadeddata', () => {
+      if (shouldAutoHide()) {
+        showControls();
+        this.resetAutoHideTimer();
+      }
+    });
+
+    // Ensure controls stay visible when video is cleared
+    videoElement.addEventListener('emptied', () => {
+      document.body.classList.remove('hide-controls');
+    });
   }
 
   /**
@@ -471,6 +498,13 @@ class Controls {
     if (label) {
       label.textContent = this.frameOverlayVisible ? 'Hide Frame Counter' : 'Show Frame Counter';
     }
+  }
+
+  /**
+   * Capture current frame to clipboard
+   */
+  async captureFrameToClipboard() {
+    await this.vc.captureFrameToClipboard();
   }
 }
 
