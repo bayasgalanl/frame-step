@@ -59,6 +59,16 @@ class Controls {
           await this.vc.stepFrame(e.shiftKey ? 10 : 1);
           break;
 
+        case 'ArrowUp':
+          e.preventDefault();
+          this.vc.adjustVolume(0.05);
+          break;
+
+        case 'ArrowDown':
+          e.preventDefault();
+          this.vc.adjustVolume(-0.05);
+          break;
+
         case ' ':
           e.preventDefault();
           this.vc.togglePlayPause();
@@ -188,11 +198,6 @@ class Controls {
 
     document.getElementById('playPauseBtn').addEventListener('click', () => {
       this.vc.togglePlayPause();
-    });
-
-    // Restart button
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      this.vc.goToBeginning();
     });
 
     // Previous frame button

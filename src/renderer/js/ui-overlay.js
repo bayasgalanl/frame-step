@@ -9,17 +9,20 @@ class UIOverlay {
       frameNumber: document.getElementById('frameNumber'),
       totalFrames: document.getElementById('totalFrames'),
       timestamp: document.getElementById('timestamp'),
-      timeDisplay: document.getElementById('timeDisplay'),
+      timeDisplayCurrent: document.getElementById('timeDisplayCurrent'),
+      timeDisplayTotal: document.getElementById('timeDisplayTotal'),
       vfrWarning: document.getElementById('vfrWarning'),
       loadingIndicator: document.getElementById('loadingIndicator'),
       playFeedback: document.getElementById('playFeedback'),
       pauseFeedback: document.getElementById('pauseFeedback'),
-      clipboardToast: document.getElementById('clipboardToast')
+      clipboardToast: document.getElementById('clipboardToast'),
+      volumeToast: document.getElementById('volumeToast')
     };
 
     this.totalFramesCount = 0;
     this.duration = 0;
     this.clipboardToastTimer = null;
+    this.volumeToastTimer = null;
   }
 
   /**
@@ -62,7 +65,8 @@ class UIOverlay {
   updateTimeDisplay(current, total) {
     const currentStr = this.formatTime(current);
     const totalStr = this.formatTime(total);
-    this.elements.timeDisplay.textContent = `${currentStr} / ${totalStr}`;
+    this.elements.timeDisplayCurrent.textContent = currentStr;
+    this.elements.timeDisplayTotal.textContent = totalStr;
   }
 
   /**
@@ -76,9 +80,9 @@ class UIOverlay {
     const secs = Math.floor(seconds % 60);
 
     if (hrs > 0) {
-      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
   /**
@@ -165,6 +169,28 @@ class UIOverlay {
   }
 
   /**
+   * Show volume feedback toast
+   * @param {number} volume - 0..1
+   */
+  showVolumeToast(volume) {
+    const toast = this.elements.volumeToast;
+    if (!toast) return;
+
+    const percent = Math.round(volume * 100);
+    toast.textContent = `Volume ${percent}%`;
+    toast.classList.add('visible');
+
+    if (this.volumeToastTimer) {
+      clearTimeout(this.volumeToastTimer);
+    }
+
+    this.volumeToastTimer = setTimeout(() => {
+      toast.classList.remove('visible');
+      this.volumeToastTimer = null;
+    }, 1200);
+  }
+
+  /**
    * Reset overlay to initial state
    */
   reset() {
@@ -173,7 +199,8 @@ class UIOverlay {
     this.elements.frameNumber.textContent = 'Frame: 0';
     this.elements.totalFrames.textContent = '0';
     this.elements.timestamp.textContent = '00:00:00.000';
-    this.elements.timeDisplay.textContent = '00:00 / 00:00';
+    this.elements.timeDisplayCurrent.textContent = '00:00';
+    this.elements.timeDisplayTotal.textContent = '00:00';
     this.totalFramesCount = 0;
     this.duration = 0;
   }

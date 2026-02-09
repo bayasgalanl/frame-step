@@ -58,6 +58,7 @@ npm run build:linux  # Linux
 | `→` | Next frame |
 | `Shift + ←` | Jump back 10 frames |
 | `Shift + →` | Jump forward 10 frames |
+| `↑` / `↓` | Volume ±5% |
 | `O` | Open file |
 | `F` | Toggle fullscreen |
 | `M` | Toggle mute |

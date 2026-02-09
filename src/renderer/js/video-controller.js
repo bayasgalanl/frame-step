@@ -129,9 +129,11 @@ class VideoController {
       // Re-apply playback rate after source load
       this.setPlaybackRate(this.playbackRate);
 
-      // Set canvas dimensions
-      this.canvas.width = this.metadata.width;
-      this.canvas.height = this.metadata.height;
+      // Set canvas dimensions using displayed video size (handles rotation metadata)
+      const displayWidth = this.videoElement.videoWidth || this.metadata.width;
+      const displayHeight = this.videoElement.videoHeight || this.metadata.height;
+      this.canvas.width = displayWidth;
+      this.canvas.height = displayHeight;
 
       // Update titlebar with filename
       const filename = filePath.split('/').pop().split('\\').pop();
@@ -402,6 +404,16 @@ class VideoController {
   }
 
   /**
+   * Adjust volume by delta (e.g., 0.05)
+   * @param {number} delta 
+   */
+  adjustVolume(delta) {
+    if (!this.metadata) return;
+    this.setVolume(this.videoElement.volume + delta);
+    this.ui.showVolumeToast(this.videoElement.volume);
+  }
+
+  /**
    * Toggle mute state
    */
   toggleMute() {
@@ -533,7 +545,6 @@ class VideoController {
     document.getElementById('playPauseBtn').disabled = !enabled;
     document.getElementById('prevFrameBtn').disabled = !enabled;
     document.getElementById('nextFrameBtn').disabled = !enabled;
-    document.getElementById('restartBtn').disabled = !enabled;
     this.updatePlaybackRateUI();
   }
 
@@ -572,36 +583,39 @@ class VideoController {
   resizeWindowToVideo() {
     if (!this.metadata) return;
 
-    const videoWidth = this.metadata.width;
-    const videoHeight = this.metadata.height;
-    const aspectRatio = videoWidth / videoHeight;
+    const displayWidth = this.videoElement.videoWidth || this.metadata.width;
+    const displayHeight = this.videoElement.videoHeight || this.metadata.height;
+    const titlebarHeight = 32;
+    const minWindowWidth = 480;
+    const minWindowHeight = 360;
 
     // Get screen dimensions
     const screenWidth = window.screen.availWidth;
     const screenHeight = window.screen.availHeight;
 
     // Maximum window size (85% of screen)
-    const maxWidth = Math.round(screenWidth * 0.85);
-    const maxHeight = Math.round(screenHeight * 0.85);
+    const maxWindowWidth = Math.round(screenWidth * 0.85);
+    const maxWindowHeight = Math.round(screenHeight * 0.85);
+    const maxContentWidth = maxWindowWidth;
+    const maxContentHeight = Math.max(1, maxWindowHeight - titlebarHeight);
 
-    let targetWidth = videoWidth;
-    let targetHeight = videoHeight + 32; // + titlebar height
+    let contentWidth = displayWidth;
+    let contentHeight = displayHeight;
 
-    // Adjust if too wide
-    if (targetWidth > maxWidth) {
-      targetWidth = maxWidth;
-      targetHeight = Math.round((targetWidth / aspectRatio) + 32);
-    }
+    // Scale down to fit max bounds
+    const downScale = Math.min(1, maxContentWidth / contentWidth, maxContentHeight / contentHeight);
+    contentWidth = Math.round(contentWidth * downScale);
+    contentHeight = Math.round(contentHeight * downScale);
 
-    // Adjust if still too tall
-    if (targetHeight > maxHeight) {
-      targetHeight = maxHeight;
-      targetWidth = Math.round((targetHeight - 32) * aspectRatio);
-    }
+    // Scale up to meet minimums while preserving aspect ratio
+    const minContentWidth = minWindowWidth;
+    const minContentHeight = Math.max(1, minWindowHeight - titlebarHeight);
+    const upScale = Math.max(1, minContentWidth / contentWidth, minContentHeight / contentHeight);
+    contentWidth = Math.round(contentWidth * upScale);
+    contentHeight = Math.round(contentHeight * upScale);
 
-    // Ensure minimum dimensions
-    targetWidth = Math.max(800, targetWidth);
-    targetHeight = Math.max(600, targetHeight);
+    const targetWidth = contentWidth;
+    const targetHeight = Math.round(contentHeight + titlebarHeight);
 
     window.electronAPI.setWindowSize(targetWidth, targetHeight, true);
   }
